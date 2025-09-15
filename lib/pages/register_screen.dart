@@ -14,6 +14,7 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
+  bool isObscure = true;
 
   @override
   void dispose() {
@@ -80,13 +81,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-            Row(
-              children: [
-                IconButton(onPressed: (){
-                  Navigator.pop(context);
-                }, icon: Icon(Icons.arrow_back_outlined))
-              ],
-            ),
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(Icons.arrow_back_outlined),
+                  ),
+                ],
+              ),
               Text(
                 "Register",
                 style: TextStyle(color: Colors.white, fontSize: 22),
@@ -102,10 +106,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
               CustomTextfield(
                 controller: passwordController,
                 hint: "Enter a password",
-                obscureText: true,
-                widget: const Icon(Icons.remove_red_eye),
+                obscureText: isObscure,
+                widget: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      isObscure = !isObscure;
+                    });
+                  },
+                  icon: Icon(Icons.remove_red_eye),
+                  color: Colors.black,
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(
+                      Colors.transparent,
+                    ),
+                    overlayColor: MaterialStateProperty.all(Colors.transparent),
+                  ),
+                ),
               ),
               SizedBox(height: height * 0.07),
+
               CustomButton(text: "Register", onTap: _handleRegister),
             ],
           ),

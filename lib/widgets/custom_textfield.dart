@@ -17,6 +17,8 @@ class CustomTextfield extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _screenHeight = MediaQuery.of(context).size.height;
+    final _screenWidth = MediaQuery.of(context).size.width;
+
     return Container(
       height: _screenHeight * 0.075,
       decoration: BoxDecoration(
@@ -30,14 +32,15 @@ class CustomTextfield extends StatelessWidget {
           ),
         ],
       ),
-      child: Center(
+      child: Padding(
+        padding: EdgeInsets.only(right: _screenWidth * 0.01),
         child: TextField(
           style: TextStyle(color: Colors.black),
           controller: controller,
           obscureText: obscureText,
           decoration: InputDecoration(
             hintText: hint,
-            suffix: widget,
+            suffixIcon: widget,
             suffixIconColor: Colors.black,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
@@ -45,7 +48,7 @@ class CustomTextfield extends StatelessWidget {
             ),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 20,
-              vertical: 18,
+              vertical: 0,
             ),
           ),
         ),

@@ -21,14 +21,13 @@ class _MainMenuState extends State<MainMenu> {
   final FriendService _friendService = FriendService();
   final MessageService _msgService = MessageService();
 
-  List<dynamic> messages = [];
-
   bool _isLoading = true;
   String? _activeChatUserId;
   final ScrollController _scrollController = ScrollController();
 
   Stream<List<dynamic>>? _friendsStream;
   Stream<List<dynamic>>? _pendingRequestsStream;
+  Stream<List<dynamic>>? _messagesStream;
 
   @override
   void initState() {
@@ -50,6 +49,36 @@ class _MainMenuState extends State<MainMenu> {
       const Duration(seconds: 3),
       (_) => _friendService.getPendingRequests(widget.currentUserId),
     ).asyncMap((future) => future);
+  }
+
+  Stream<List<dynamic>> _createMessagesStream(String chatUserId) {
+    return Stream.periodic(
+      const Duration(seconds: 2), // daha hızlı yenileme
+      (_) => _msgService.getMessages(
+        userId1: widget.currentUserId,
+        userId2: chatUserId,
+      ),
+    ).asyncMap((future) => future);
+  }
+
+  void _openChat(String userId) {
+    setState(() {
+      _activeChatUserId = userId;
+      _messagesStream = _createMessagesStream(userId);
+    });
+  }
+
+  Future<void> _sendMessage() async {
+    if (_activeChatUserId == null) return;
+    final text = msgController.text.trim();
+    if (text.isEmpty) return;
+
+    await _msgService.sendMessage(
+      from: widget.currentUserId,
+      to: _activeChatUserId!,
+      text: text,
+    );
+    msgController.clear();
   }
 
   Future<void> _acceptRequest(String fromUserId) async {
@@ -74,40 +103,6 @@ class _MainMenuState extends State<MainMenu> {
     );
   }
 
-  Future<void> _openChat(String userId) async {
-    setState(() => _activeChatUserId = userId);
-    await _loadMessages();
-  }
-
-  Future<void> _loadMessages() async {
-    if (_activeChatUserId == null) return;
-    final msgs = await _msgService.getMessages(
-      userId1: widget.currentUserId,
-      userId2: _activeChatUserId!,
-    );
-    if (!mounted) return;
-    setState(() => messages = msgs);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollController.hasClients) {
-        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-      }
-    });
-  }
-
-  Future<void> _sendMessage() async {
-    if (_activeChatUserId == null) return;
-    final text = msgController.text.trim();
-    if (text.isEmpty) return;
-
-    await _msgService.sendMessage(
-      from: widget.currentUserId,
-      to: _activeChatUserId!,
-      text: text,
-    );
-    msgController.clear();
-    await _loadMessages();
-  }
-
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -120,7 +115,7 @@ class _MainMenuState extends State<MainMenu> {
     return Scaffold(
       body: Row(
         children: [
-          // ✅ Sol panel artık StreamBuilder kullanıyor
+          // Sol panel
           StreamBuilder<List<dynamic>>(
             stream: _pendingRequestsStream,
             builder: (context, snapshot) {
@@ -148,7 +143,7 @@ class _MainMenuState extends State<MainMenu> {
             },
           ),
 
-          // ✅ Orta + Sağ panel StreamBuilder ile geliyor
+          // Orta + Sağ panel
           Expanded(
             child: StreamBuilder<List<dynamic>>(
               stream: _friendsStream,
@@ -156,14 +151,35 @@ class _MainMenuState extends State<MainMenu> {
                 final friends = snapshot.data ?? [];
                 return Row(
                   children: [
-                    ChatPanel(
-                      messages: messages,
-                      activeChatUserId: _activeChatUserId,
-                      friends: friends,
-                      scrollController: _scrollController,
-                      msgController: msgController,
-                      onSendMessage: _sendMessage,
-                      currentUserId: widget.currentUserId,
+                    Expanded(
+                      child: _activeChatUserId == null
+                          ? const Center(child: Text("Bir sohbet seçin"))
+                          : StreamBuilder<List<dynamic>>(
+                              stream: _messagesStream,
+                              builder: (context, snapshot) {
+                                final messages = snapshot.data ?? [];
+                                WidgetsBinding.instance.addPostFrameCallback((
+                                  _,
+                                ) {
+                                  if (_scrollController.hasClients) {
+                                    _scrollController.jumpTo(
+                                      _scrollController
+                                          .position
+                                          .maxScrollExtent,
+                                    );
+                                  }
+                                });
+                                return ChatPanel(
+                                  messages: messages,
+                                  activeChatUserId: _activeChatUserId,
+                                  friends: friends,
+                                  scrollController: _scrollController,
+                                  msgController: msgController,
+                                  onSendMessage: _sendMessage,
+                                  currentUserId: widget.currentUserId,
+                                );
+                              },
+                            ),
                     ),
                     FriendsPanel(friends: friends, onOpenChat: _openChat),
                   ],

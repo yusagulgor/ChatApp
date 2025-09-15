@@ -27,10 +27,15 @@ class LeftPanel extends StatelessWidget {
       width: screenWidth * 0.2,
       height: screenHeight,
       color: const Color.fromARGB(255, 29, 29, 29),
-      padding: EdgeInsets.symmetric(vertical: screenHeight * 0.03),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(onPressed: () {}, icon: Icon(Icons.logout_rounded)),
+            ],
+          ),
           Center(
             child: const Text(
               "Arkadaş ekle",

@@ -15,6 +15,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
+  bool isObscure = true;
 
   @override
   void dispose() {
@@ -98,9 +99,16 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: _screenHeight * 0.05),
               CustomTextfield(
-                obscureText: true,
+                obscureText: isObscure,
                 hint: "Enter a password",
-                widget: const Icon(Icons.remove_red_eye),
+                widget: IconButton(
+                  icon: Icon(Icons.remove_red_eye),
+                  onPressed: () {
+                    setState(() {
+                      isObscure = !isObscure;
+                    });
+                  },
+                ),
                 controller: passwordController,
               ),
               SizedBox(height: _screenHeight * 0.04),

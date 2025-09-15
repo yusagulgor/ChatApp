@@ -96,7 +96,14 @@ class ChatPanel extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
-                Expanded(child: TextField(controller: msgController)),
+                Expanded(
+                  child: TextField(
+                    controller: msgController,
+                    onSubmitted: (value) {
+                      onSendMessage();
+                    },
+                  ),
+                ),
                 IconButton(
                   icon: const Icon(Icons.send),
                   onPressed: onSendMessage,
