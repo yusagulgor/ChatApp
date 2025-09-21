@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:chattingapp/pages/chat_panel.dart';
 import 'package:chattingapp/pages/friends_panel.dart';
 import 'package:chattingapp/pages/left_panel.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../service/friend_service.dart';
 import '../service/message_service.dart';
 
@@ -53,7 +55,7 @@ class _MainMenuState extends State<MainMenu> {
 
   Stream<List<dynamic>> _createMessagesStream(String chatUserId) {
     return Stream.periodic(
-      const Duration(seconds: 2), // daha hızlı yenileme
+      const Duration(seconds: 0), // daha hızlı yenileme
       (_) => _msgService.getMessages(
         userId1: widget.currentUserId,
         userId2: chatUserId,
@@ -103,11 +105,24 @@ class _MainMenuState extends State<MainMenu> {
     );
   }
 
+  Future<void> _launchUrl() async {
+    final Uri _url = Uri.parse("https://github.com/yusagulgor");
+
+    // Tek seferde dener, false dönerse hata atar
+    final bool launched = await launchUrl(
+      _url,
+      mode: LaunchMode.externalApplication,
+    );
+
+    if (!launched) {
+      throw 'URL açılamadı: $_url';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-
     if (_isLoading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
@@ -153,7 +168,37 @@ class _MainMenuState extends State<MainMenu> {
                   children: [
                     Expanded(
                       child: _activeChatUserId == null
-                          ? const Center(child: Text("Bir sohbet seçin"))
+                          ? Center(
+                              child: Text.rich(
+                                TextSpan(
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  children: [
+                                    TextSpan(text: "Bir sohbet seçin\n"),
+                                    TextSpan(
+                                      text:
+                                          "TbeeterApp uygulamamıza gelip tweet atabilirsiniz\nTbeeterApp uygulamamız için ",
+                                    ),
+                                    TextSpan(
+                                      text: "github.com/yusagulgor",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors
+                                            .blue, // link gibi görünsün diye mavi yapıyoruz
+                                      ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = _launchUrl,
+                                    ),
+                                    TextSpan(
+                                      text: " adresine girmeyi unutmayın.",
+                                    ),
+                                  ],
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            )
                           : StreamBuilder<List<dynamic>>(
                               stream: _messagesStream,
                               builder: (context, snapshot) {

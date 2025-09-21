@@ -21,7 +21,7 @@ class ChatPanel extends StatelessWidget {
   });
 
   String chatUserName() {
-    if (activeChatUserId == null) return "Sohbet Başlat";
+    if (activeChatUserId == null) return "Bir Sohbet Seçin";
     final user = friends.firstWhere(
       (f) => f['id'] == activeChatUserId,
       orElse: () => {'name': 'Bilinmeyen'},

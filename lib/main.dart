@@ -1,6 +1,5 @@
 import 'package:chattingapp/pages/login_screen.dart';
 import 'package:flutter/material.dart';
-import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {
@@ -8,7 +7,11 @@ Future<void> main() async {
   runApp(const MainApp());
 }
 
-
+//Custom notification
+//Log out
+//mesaj ekranı kişi seçilince gözüksün diğer türlü boş ekran
+//Kullanıcı kendi ismini ana ekranda muhtelemen sol üst köşede görsün.
+//mesaj gözükme delayi azaltılacak
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 

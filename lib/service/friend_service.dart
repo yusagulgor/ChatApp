@@ -34,7 +34,7 @@ class FriendService {
   ) async {
     try {
       final response = await _dio.post(
-        "/send",
+        "/send-request",
         data: {"fromUserId": fromUserId, "toName": toName},
       );
       return response.data is Map<String, dynamic>
@@ -52,7 +52,7 @@ class FriendService {
   ) async {
     try {
       final response = await _dio.post(
-        "/accept",
+        "/accept-request",
         data: {"userId": userId, "fromUserId": fromUserId},
       );
       return response.data is Map<String, dynamic>
@@ -70,7 +70,7 @@ class FriendService {
   ) async {
     try {
       final response = await _dio.post(
-        "/reject",
+        "/reject-request",
         data: {"userId": userId, "fromUserId": fromUserId},
       );
       return response.data is Map<String, dynamic>
@@ -84,7 +84,10 @@ class FriendService {
 
   Future<List<dynamic>> getFriends(String userId) async {
     try {
-      final response = await _dio.post("/list", data: {"userId": userId});
+      final response = await _dio.post(
+        "/friends-list",
+        data: {"userId": userId},
+      );
       if (response.data is Map<String, dynamic> &&
           response.data.containsKey("friends")) {
         final List<dynamic> friends = response.data["friends"] as List<dynamic>;
@@ -98,7 +101,10 @@ class FriendService {
 
   Future<List<dynamic>> getPendingRequests(String userId) async {
     try {
-      final response = await _dio.post("/pending", data: {"userId": userId});
+      final response = await _dio.post(
+        "/pending-requests",
+        data: {"userId": userId},
+      );
 
       final List<dynamic> pendingList =
           response.data["pending"] as List<dynamic>? ?? [];
@@ -110,7 +116,7 @@ class FriendService {
           "status": true,
         };
       }).toList();
-
+      print(requestsList);
       return requestsList;
     } on DioException catch (e) {
       return [];

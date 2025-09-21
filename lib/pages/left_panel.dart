@@ -1,3 +1,4 @@
+import 'package:chattingapp/pages/login_screen.dart';
 import 'package:flutter/material.dart';
 import '../widgets/username_searchbar.dart';
 
@@ -33,7 +34,15 @@ class LeftPanel extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButton(onPressed: () {}, icon: Icon(Icons.logout_rounded)),
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                  );
+                },
+                icon: Icon(Icons.logout_rounded),
+              ),
             ],
           ),
           Center(

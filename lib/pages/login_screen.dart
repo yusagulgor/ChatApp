@@ -1,6 +1,7 @@
 import 'package:chattingapp/pages/main_menu.dart';
 import 'package:chattingapp/pages/register_screen.dart';
 import 'package:chattingapp/service/auth_service.dart';
+import 'package:chattingapp/test/errorWidget.dart';
 import 'package:chattingapp/widgets/custom_button.dart';
 import 'package:chattingapp/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   bool isObscure = true;
-
+  bool hasError = false;
+  String errorMessage = "";
   @override
   void dispose() {
     usernameController.dispose();
@@ -24,35 +26,55 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  Future<void> _handleLogin() async {
+  Future<bool> handleLogin() async {
     final name = usernameController.text.trim();
     final password = passwordController.text.trim();
 
     if (name.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Tüm alanları doldurun")));
-      return;
+      // ScaffoldMessenger.of(
+      //   context,
+      // ).showSnackBar(const SnackBar(content: Text("Tüm alanları doldurun")));
+      return false;
     }
 
     final response = await AuthService().login(name, password);
 
     if (response['error'] != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Giriş başarısız: ${response['error']}")),
-      );
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text("Giriş başarısız: ${response['error']}")),
+      // );
+      return false;
     } else {
-      final userId = response['id']; // <- ID burada
-      final userName = response['name'];
+      // user objesini backend'den al
+      final user = response['user'];
+      final userId = user['id'];
+      final userName = user['name'];
+      final token = response['token']; // istersen ileride kullanabilirsin
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Giriş başarılı: $userName")));
+      // ScaffoldMessenger.of(
+      //   context,
+      // ).showSnackBar(SnackBar(content: Text("Giriş başarılı: $userName")));
 
       // MainMenu’ye ID gönder
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => MainMenu(currentUserId: userId)),
+        MaterialPageRoute(
+          builder: (context) => MainMenu(currentUserId: userId ?? ""),
+        ),
+      );
+      return true;
+    }
+  }
+
+  void _onLoginPressed() async {
+    final success = await handleLogin();
+    if (!success) {
+      // Üstten kayan bağımsız banner göster
+      TopBanner.show(
+        context,
+        message: "Giriş Başarısız",
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 3),
       );
     }
   }
@@ -112,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: passwordController,
               ),
               SizedBox(height: _screenHeight * 0.04),
-              CustomButton(text: "Login", onTap: _handleLogin),
+              CustomButton(text: "Login", onTap: _onLoginPressed),
               SizedBox(height: _screenHeight * 0.03),
               TextButton(
                 onPressed: () {

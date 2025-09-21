@@ -36,7 +36,8 @@ class MessageTextfield extends StatelessWidget {
           decoration: InputDecoration(
             hintText: hint,
             suffix: IconButton(
-              onPressed: () {},
+              onPressed: () {
+              },
               icon: Icon(Icons.send),
               color: Colors.black,
             ),
