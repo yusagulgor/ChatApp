@@ -9,9 +9,13 @@ import '../service/friend_service.dart';
 import '../service/message_service.dart';
 
 class MainMenu extends StatefulWidget {
-  const MainMenu({super.key, required this.currentUserId});
+  const MainMenu({
+    super.key,
+    required this.currentUserId,
+    required this.username,
+  });
   final String currentUserId;
-
+  final String username;
   @override
   State<MainMenu> createState() => _MainMenuState();
 }
@@ -136,6 +140,7 @@ class _MainMenuState extends State<MainMenu> {
             builder: (context, snapshot) {
               final pendingRequests = snapshot.data ?? [];
               return LeftPanel(
+                username: widget.username,
                 screenWidth: screenWidth,
                 screenHeight: screenHeight,
                 usernameController: usernameController,

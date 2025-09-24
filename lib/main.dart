@@ -7,11 +7,8 @@ Future<void> main() async {
   runApp(const MainApp());
 }
 
-//Custom notification
-//Log out
-//mesaj ekranı kişi seçilince gözüksün diğer türlü boş ekran
-//Kullanıcı kendi ismini ana ekranda muhtelemen sol üst köşede görsün.
-//mesaj gözükme delayi azaltılacak
+//Custom notification yarı halloldu
+//main menu errorleri hallet
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 

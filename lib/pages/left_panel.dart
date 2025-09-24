@@ -1,4 +1,5 @@
 import 'package:chattingapp/pages/login_screen.dart';
+import 'package:chattingapp/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import '../widgets/username_searchbar.dart';
 
@@ -10,7 +11,7 @@ class LeftPanel extends StatelessWidget {
   final VoidCallback onAddFriend;
   final double screenWidth;
   final double screenHeight;
-
+  final String username;
   const LeftPanel({
     super.key,
     required this.pendingRequests,
@@ -20,10 +21,12 @@ class LeftPanel extends StatelessWidget {
     required this.onAddFriend,
     required this.screenWidth,
     required this.screenHeight,
+    required this.username,
   });
 
   @override
   Widget build(BuildContext context) {
+    print(usernameController.text);
     return Container(
       width: screenWidth * 0.2,
       height: screenHeight,
@@ -43,6 +46,15 @@ class LeftPanel extends StatelessWidget {
                 },
                 icon: Icon(Icons.logout_rounded),
               ),
+              Expanded(
+                child: Center(
+                  child: Text(
+                    username,
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              SizedBox(width: 48),
             ],
           ),
           Center(

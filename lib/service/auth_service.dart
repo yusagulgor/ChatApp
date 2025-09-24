@@ -66,4 +66,16 @@ class AuthService {
       return {"error": e.message};
     }
   }
+
+  Future<String?> getUserData(String name, String password) async {
+    final response = await AuthService().login(name, password);
+    if (response.containsKey("name")) {
+      return response["name"] as String;
+    }
+
+    if (response.containsKey("error")) {
+      print("Hata ${response["error"]}");
+    }
+    return null;
+  }
 }

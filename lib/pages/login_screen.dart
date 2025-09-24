@@ -59,7 +59,8 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => MainMenu(currentUserId: userId ?? ""),
+          builder: (context) =>
+              MainMenu(currentUserId: userId ?? "", username: userName),
         ),
       );
       return true;
