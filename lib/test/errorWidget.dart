@@ -4,11 +4,12 @@ class TopBanner {
   static void show(
     BuildContext context, {
     required String message,
-    Color backgroundColor = Colors.red,
+    required Color backgroundColor,
     Duration duration = const Duration(seconds: 2),
+    required Widget icon, // IconData yerine Widget
   }) {
     final overlay = Overlay.of(context);
-    if (overlay == null) ;
+    if (overlay == null) return;
 
     late OverlayEntry entry;
 
@@ -18,6 +19,7 @@ class TopBanner {
         backgroundColor: backgroundColor,
         onClose: () => entry.remove(),
         duration: duration,
+        icon: icon, // artık Widget
       ),
     );
 
@@ -30,6 +32,7 @@ class _AnimatedBanner extends StatefulWidget {
   final Color backgroundColor;
   final Duration duration;
   final VoidCallback onClose;
+  final Widget icon; // IconData değil, Widget
 
   const _AnimatedBanner({
     super.key,
@@ -37,6 +40,7 @@ class _AnimatedBanner extends StatefulWidget {
     required this.backgroundColor,
     required this.duration,
     required this.onClose,
+    required this.icon,
   });
 
   @override
@@ -98,7 +102,7 @@ class _AnimatedBannerState extends State<_AnimatedBanner>
                 ),
               ],
             ),
-            child: const Icon(Icons.close, color: Colors.white, size: 24),
+            child: widget.icon, // burada direkt Widget render ediliyor
           ),
         ),
       ),

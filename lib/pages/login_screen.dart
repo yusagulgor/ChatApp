@@ -76,6 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
         message: "Giriş Başarısız",
         backgroundColor: Colors.red,
         duration: const Duration(seconds: 3),
+        icon: Icon(Icons.close, color: Colors.red),
       );
     }
   }

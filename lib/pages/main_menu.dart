@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:chattingapp/pages/chat_panel.dart';
 import 'package:chattingapp/pages/friends_panel.dart';
 import 'package:chattingapp/pages/left_panel.dart';
+import 'package:chattingapp/test/errorWidget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -59,7 +60,7 @@ class _MainMenuState extends State<MainMenu> {
 
   Stream<List<dynamic>> _createMessagesStream(String chatUserId) {
     return Stream.periodic(
-      const Duration(seconds: 0), // daha hızlı yenileme
+      const Duration(seconds: 0),
       (_) => _msgService.getMessages(
         userId1: widget.currentUserId,
         userId2: chatUserId,
@@ -152,10 +153,18 @@ class _MainMenuState extends State<MainMenu> {
                   if (username.isNotEmpty) {
                     _friendService.sendRequest(widget.currentUserId, username);
                     usernameController.clear();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Arkadaşlık isteği gönderildi"),
-                      ),
+                    TopBanner.show(
+                      backgroundColor: Colors.green,
+                      context,
+                      message: "Username is empty",
+                      icon: Icon(Icons.check, color: Colors.white),
+                    );
+                  } else if (username.isEmpty) {
+                    TopBanner.show(
+                      backgroundColor: Colors.red,
+                      context,
+                      message: "Username is empty",
+                      icon: Icon(Icons.close, color: Colors.white),
                     );
                   }
                 },
