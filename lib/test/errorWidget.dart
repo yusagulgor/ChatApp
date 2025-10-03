@@ -81,28 +81,54 @@ class _AnimatedBannerState extends State<_AnimatedBanner>
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Positioned(
       top: 50,
-      left: 0,
-      right: 0,
+      left: 20,
+      right: 20,
       child: SlideTransition(
         position: _animation,
-        child: Center(
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: widget.backgroundColor,
-              shape: BoxShape.circle,
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 6,
-                  offset: Offset(0, 3),
-                ),
-              ],
+        child: Material(
+          color: Colors.transparent,
+          child: Center(
+            // ekran ortasına göre hizalama
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              constraints: const BoxConstraints(
+                maxWidth: 300, // maksimum genişlik
+                minWidth: 150, // minimum genişlik
+              ),
+              decoration: BoxDecoration(
+                color: widget.backgroundColor,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 6,
+                    offset: Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min, // sadece içerik kadar genişler
+                children: [
+                  widget.icon,
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      widget.message,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                      softWrap: true,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            child: widget.icon, // burada direkt Widget render ediliyor
           ),
         ),
       ),

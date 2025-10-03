@@ -113,7 +113,6 @@ class _MainMenuState extends State<MainMenu> {
   Future<void> _launchUrl() async {
     final Uri _url = Uri.parse("https://github.com/yusagulgor");
 
-    // Tek seferde dener, false dönerse hata atar
     final bool launched = await launchUrl(
       _url,
       mode: LaunchMode.externalApplication,
@@ -148,25 +147,60 @@ class _MainMenuState extends State<MainMenu> {
                 pendingRequests: pendingRequests,
                 onAccept: _acceptRequest,
                 onReject: _rejectRequest,
-                onAddFriend: () {
+                onAddFriend: () async {
                   final username = usernameController.text.trim();
-                  if (username.isNotEmpty) {
-                    _friendService.sendRequest(widget.currentUserId, username);
-                    usernameController.clear();
+                  final usernameLower = username.toLowerCase();
+
+                  // Boş kullanıcı adı
+                  if (username.isEmpty) {
                     TopBanner.show(
-                      backgroundColor: Colors.green,
                       context,
-                      message: "Username is empty",
-                      icon: Icon(Icons.check, color: Colors.white),
-                    );
-                  } else if (username.isEmpty) {
-                    TopBanner.show(
+                      message: "Kullanıcı adı boş olamaz",
+                      icon: const Icon(Icons.close, color: Colors.white),
                       backgroundColor: Colors.red,
+                    );
+                    return;
+                  }
+
+                  // Zaten istek varsa
+                  if (pendingRequests.any(
+                    (req) =>
+                        req['name'].toString().toLowerCase() == usernameLower,
+                  )) {
+                    TopBanner.show(
                       context,
-                      message: "Username is empty",
-                      icon: Icon(Icons.close, color: Colors.white),
+                      message: "Bu kullanıcıdan zaten istek var",
+                      icon: const Icon(Icons.remove, color: Colors.white),
+                      backgroundColor: Colors.orange,
+                    );
+                    return;
+                  }
+
+                  // API isteğini gönder
+                  final result = await _friendService.sendRequest(
+                    widget.currentUserId,
+                    username,
+                  );
+
+                  // Hata varsa kırmızı banner
+                  if (result.containsKey("error")) {
+                    TopBanner.show(
+                      context,
+                      message: result["error"] ?? "Bir hata oluştu",
+                      icon: const Icon(Icons.close, color: Colors.white),
+                      backgroundColor: Colors.red,
+                    );
+                  } else {
+                    // Başarılı ise yeşil banner
+                    TopBanner.show(
+                      context,
+                      message: result["message"] ?? "İstek gönderildi",
+                      icon: const Icon(Icons.check, color: Colors.white),
+                      backgroundColor: Colors.green,
                     );
                   }
+
+                  usernameController.clear();
                 },
               );
             },

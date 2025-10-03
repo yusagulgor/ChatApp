@@ -116,7 +116,6 @@ class FriendService {
           "status": true,
         };
       }).toList();
-      print(requestsList);
       return requestsList;
     } on DioException catch (e) {
       return [];

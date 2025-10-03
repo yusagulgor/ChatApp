@@ -33,7 +33,10 @@ class CustomTextfield extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding: EdgeInsets.only(right: _screenWidth * 0.01),
+        padding: EdgeInsets.only(
+          right: _screenWidth * 0.01,
+          top: _screenHeight * 0.008,
+        ),
         child: TextField(
           style: TextStyle(color: Colors.black),
           controller: controller,

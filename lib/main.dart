@@ -7,8 +7,9 @@ Future<void> main() async {
   runApp(const MainApp());
 }
 
-//Custom notification yarı halloldu
-//main menu errorleri hallet
+// eğer öyle isme sahip biri yoksa ve arkadaşsa çarpı
+// eğer pending ise çizgi + turuncu background
+
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 

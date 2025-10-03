@@ -90,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: const Color.fromARGB(255, 89, 30, 253),
       body: Center(
         child: Container(
-          width: _screenWidth * 0.5,
+          width: _screenWidth * 0.45,
           height: _screenHeight * 0.65,
           decoration: BoxDecoration(
             boxShadow: [
