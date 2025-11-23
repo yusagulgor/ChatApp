@@ -1,5 +1,8 @@
 import 'package:chattingapp/pages/login_screen.dart';
 import 'package:chattingapp/service/auth_service.dart';
+import 'package:chattingapp/service/friend_service.dart';
+import 'package:chattingapp/widgets/custom_popup.dart';
+import 'package:chattingapp/widgets/join_group_popup.dart';
 import 'package:flutter/material.dart';
 import '../widgets/username_searchbar.dart';
 
@@ -12,6 +15,7 @@ class LeftPanel extends StatelessWidget {
   final double screenWidth;
   final double screenHeight;
   final String username;
+  final String userId;
   const LeftPanel({
     super.key,
     required this.pendingRequests,
@@ -22,6 +26,7 @@ class LeftPanel extends StatelessWidget {
     required this.screenWidth,
     required this.screenHeight,
     required this.username,
+    required this.userId,
   });
 
   @override
@@ -72,6 +77,27 @@ class LeftPanel extends StatelessWidget {
               screenHeight: screenHeight,
               onTap: onAddFriend,
             ),
+          ),
+          const Divider(color: Colors.white),
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    showCustomPopup(context, userId);
+                  },
+                  child: Text("Create a group"),
+                ),
+              ),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    showCreateGroupPopup(context);
+                  },
+                  child: Center(child: Text("Join a group")),
+                ),
+              ),
+            ],
           ),
           SizedBox(height: screenHeight * 0.05),
           const Divider(color: Colors.white),
@@ -171,4 +197,29 @@ class customButton extends StatelessWidget {
       ),
     );
   }
+}
+
+void showCustomPopup(BuildContext context, String userId) {
+  showDialog(
+    context: context,
+    barrierDismissible: true,
+    builder: (context) {
+      return CustomPopup(
+        friendService: FriendService(),
+        userId: userId,
+        title: 'asd',
+        message: 'asd',
+      );
+    },
+  );
+}
+
+void showCreateGroupPopup(BuildContext context) {
+  showDialog(
+    context: context,
+    barrierDismissible: true,
+    builder: (context) {
+      return JoinGroupPopup();
+    },
+  );
 }

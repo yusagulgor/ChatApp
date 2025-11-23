@@ -19,7 +19,7 @@ class FriendsPanel extends StatelessWidget {
       child: Column(
         children: [
           const Text(
-            "Arkadaşların",
+            "Sohbetlerin",
             style: TextStyle(fontSize: 20, color: Colors.white),
           ),
           const Divider(color: Colors.white),

@@ -140,6 +140,7 @@ class _MainMenuState extends State<MainMenu> {
             builder: (context, snapshot) {
               final pendingRequests = snapshot.data ?? [];
               return LeftPanel(
+                userId: widget.currentUserId,
                 username: widget.username,
                 screenWidth: screenWidth,
                 screenHeight: screenHeight,
